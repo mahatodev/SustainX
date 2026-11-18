@@ -1,0 +1,74 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                String        @id @default(cuid())
+  email             String        @unique
+  name              String
+  nickname          String
+  picture           String?
+  walletAddress     String?       @unique
+  householdSize     Int           @default(3)
+  pinCode           String        @default("700091")
+  compositeScore    Int           @default(120)
+  tier              String        @default("BRONZE") // BRONZE, SILVER, GOLD, PLATINUM
+  co2SavedGrams     Int           @default(0)
+  plasticSavedGrams Int           @default(0)
+  rewardBalanceInr  Float         @default(0.0)
+  sbtTokenId        Int?
+  actions           GreenAction[]
+  posts             CommunityPost[]
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+}
+
+model GreenAction {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  domain            String   // ELECTRICITY, WASTE, TRANSIT, WATER, AFFORESTATION
+  verificationType  String   // BBPS_API, IOT_SIGNED, QR_TICKET, CV_PHOTO, MANUAL
+  rawValue          Float    // kWh, grams, km, liters, or sapling count
+  co2EquivalentG    Int
+  confidenceWeight  Float    // 0.2 to 1.0
+  aqiMultiplier     Float    @default(1.0)
+  pHash             String?  @unique
+  qrNonceHash       String?  @unique
+  iotSignature      String?
+  status            String   @default("VERIFIED") // VERIFIED, REJECTED_SPOOF, FLAGGED_ANOMALY
+  rejectionReason   String?
+  txHash            String?
+  createdAt         DateTime @default(now())
+}
+
+model CommunityPost {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  body              String
+  imageUrl          String?
+  pHash             String?
+  cvLabel           String?
+  cvConfidence      Float?
+  isVerifiedAction  Boolean  @default(false)
+  likes             String   @default("[]") // JSON stringified array of user IDs
+  postedAt          DateTime @default(now())
+}
+
+model CorporateRetirement {
+  id                String   @id @default(cuid())
+  corporateName     String
+  brsrReference     String
+  co2RetiredKg      Float
+  plasticRetiredKg  Float
+  amountPaidInr     Float
+  certificateHash   String   @unique
+  txHash            String
+  createdAt         DateTime @default(now())
+}

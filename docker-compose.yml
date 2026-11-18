@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:./dev.db
+      - FASTAPI_URL=http://ai-dmrv:8000
+      - IOT_DEVICE_SECRET=sustainx-iot-secret-2024
+      - OPENWEATHER_API_KEY=
+    depends_on:
+      - ai-dmrv
+
+  ai-dmrv:
+    build:
+      context: ./services/ai-dmrv
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - IOT_DEVICE_SECRET=sustainx-iot-secret-2024
+      - DEMO_MODE=true

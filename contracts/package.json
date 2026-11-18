@@ -1,0 +1,20 @@
+{
+  "name": "greenpratidin-contracts",
+  "version": "1.0.0",
+  "description": "Dual-token smart contract system for GreenPratidin – SustainSBT (ERC-5192) & SustainImpact (ERC-1155)",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy:local": "npx hardhat run scripts/deploy.js",
+    "deploy:amoy": "npx hardhat run scripts/deploy.js --network polygonAmoy"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.3"
+  },
+  "license": "MIT"
+}
